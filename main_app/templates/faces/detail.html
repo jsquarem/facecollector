@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>Face Details</h1>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ face.name }}</h5>
+    <p>Age: {{ face.age }}</p>
+    <p>Hotness: {{ face.hotness }}</p>
+    <p>Date: {{ face.date }}</p>
+  </div>
+
+  <div class="card-body">
+    <a class="btn btn-primary" href="{% url 'faces_update' face.id %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'faces_delete' face.id %}">Delete</a>
+  </div>
+</div>
+
+{% endblock %}

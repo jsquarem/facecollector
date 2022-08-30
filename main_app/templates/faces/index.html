@@ -5,13 +5,17 @@
   {% for face in faces %}
   <div class="col-lg-3">
     <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">{{ face.name }}</h5>
-        <p>Age: {{ face.age }}</p>
-        <p>Hotness: {{ face.hotness }}</p>
-        <p>Age: {{ face.age }}</p>
-        <p>Date: {{ face.date }}</p>
-      </div>
+      <a
+        href="{% url 'detail' face.id %}"
+        class="text-decoration-none text-reset"
+      >
+        <div class="card-body text-black">
+          <h5 class="card-title">{{ face.name }}</h5>
+          <p>Age: {{ face.age }}</p>
+          <p>Hotness: {{ face.hotness }}</p>
+          <p>Date: {{ face.date }}</p>
+        </div>
+      </a>
     </div>
   </div>
   {% if forloop.counter0|divisibleby:4 and forloop.counter0 > 3 %}
