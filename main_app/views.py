@@ -1,8 +1,8 @@
 from django.http import HttpResponse, StreamingHttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Face
-from .forms import FaceForm
+from .forms import FaceForm, PictureForm
 # from django.views.decorators import gzip
 import cv2
 # import threading
@@ -23,7 +23,16 @@ def faces_index(request):
 
 def faces_detail(request, face_id):
   face = Face.objects.get(id=face_id)
-  return render(request, 'faces/detail.html', { 'face': face })
+  picture_form = PictureForm()
+  return render(request, 'faces/detail.html', { 'face': face, 'picture_form': picture_form })
+
+def add_picture(request, face_id):
+  form = PictureForm(request.POST)
+  if form.is_valid():
+    new_picture = form.save(commit=False)
+    new_picture.face_id = face_id
+    new_picture.save()
+  return redirect('detail', face_id=face_id)
 
 class FaceCreate(CreateView):
     model = Face
