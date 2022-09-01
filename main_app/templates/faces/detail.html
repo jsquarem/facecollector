@@ -7,7 +7,7 @@
       <div class="card-body">
         <h5 class="card-title">{{ face.name }}</h5>
         <p>Age: {{ face.age }}</p>
-        <p>Hotness: {{ face.hotness }}</p>
+        <p>Golden Ratio: {{ face.golden_ratio }}</p>
         <p>Date: {{ face.date }}</p>
         <p>Gender: {{ face.get_gender_display }}</p>
       </div>
@@ -48,4 +48,47 @@
   </div>
   {% endfor %}
 </div>
-{% endblock %}
+
+<div class="row mt-3">
+  <div class="col-6">
+    <h3>{{face.name}}'s Tags</h3>
+    <ul class="list-group">
+      {% if face.tags.count %} {% for tag in face.tags.all %}
+      <li class="list-group-item">{{tag.name}}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <h5>No Tags :(</h5>
+    {% endif %}
+  </div>
+  <!-- Available tags will come after this line -->
+  <div class="col-6">
+    <h3>Available Tags</h3>
+    <ul class="list-group">
+      {% if tags.count %} {% for tag in tags.all %}
+      <li class="list-group-item">
+        {{tag.name}} -
+        <form
+          id="tag-form"
+          action="{% url 'assoc_tag' face.id tag.id %}"
+          method="post"
+          class="d-inline"
+        >
+          {% csrf_token %}
+          <a href="#" onclick="submitForm()">Add</a>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <h5>{{face.name}} Already Has All Tags Available</h5>
+    {% endif %}
+  </div>
+  <script>
+    function submitForm() {
+      let form = document.getElementById('tag-form');
+      form.submit();
+    }
+  </script>
+  {% endblock %}
+</div>

@@ -3,7 +3,14 @@ from django.urls import reverse
 
 # Create your models here.
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('tags_detail', kwargs={'pk': self.id})
 
 GENDER = (
   ('F', 'Female'),
@@ -15,13 +22,14 @@ GENDER = (
 class Face(models.Model):
   name = models.CharField(max_length=100)
   age = models.IntegerField()
-  hotness = models.CharField(max_length=100)
+  golden_ratio = models.CharField(max_length=100)
   date = models.DateTimeField(auto_now_add=True)
   gender = models.CharField(
     max_length = 1,
     choices = GENDER,
     default = GENDER[2][0]
   )
+  tags = models.ManyToManyField(Tag)
 
   def __str__(self):
     return self.name

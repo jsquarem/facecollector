@@ -41,10 +41,18 @@
               <a class="nav-link" href="/about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/faces">Faces</a>
+              <a class="nav-link" href="/faces">View all Faces</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'faces_create' %}">Add a Face</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'tags_create' %}">Add a Tag</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'tags_index' %}"
+                >View all Tags</a
+              >
             </li>
           </ul>
         </div>

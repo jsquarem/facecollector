@@ -13,5 +13,11 @@ urlpatterns = [
   path('faces/<int:face_id>/add_picture', views.add_picture, name='add_picture'),
   path('faces/<int:pk>/update/', views.FaceUpdate.as_view(), name='faces_update'),
   path('faces/<int:pk>/delete/', views.FaceDelete.as_view(), name='faces_delete'),
+  path('faces/<int:face_id>/assoc_tag/<int:tag_id>/', views.assoc_tag, name='assoc_tag'),
+  path('tags/', views.TagList.as_view(), name='tags_index'),
+  path('tags/<int:pk>/', views.TagDetail.as_view(), name='tags_detail'),
+  path('tags/create/', views.TagCreate.as_view(), name='tags_create'),
+  path('tags/<int:pk>/update/', views.TagUpdate.as_view(), name='tags_update'),
+  path('tags/<int:pk>/delete/', views.TagDelete.as_view(), name='tags_delete'),
 
 ]

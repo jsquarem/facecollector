@@ -1,8 +1,9 @@
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Face
-from .forms import FaceForm, PictureForm
+from django.views.generic import ListView, DetailView
+from .models import Face, Tag
+from .forms import FaceForm, PictureForm, TagForm
 # from django.views.decorators import gzip
 import cv2
 # import threading
@@ -24,7 +25,9 @@ def faces_index(request):
 def faces_detail(request, face_id):
   face = Face.objects.get(id=face_id)
   picture_form = PictureForm()
-  return render(request, 'faces/detail.html', { 'face': face, 'picture_form': picture_form })
+  tags_face_doesnt_have = Tag.objects.exclude(id__in = face.tags.all().values_list('id'))
+
+  return render(request, 'faces/detail.html', { 'face': face, 'picture_form': picture_form, 'tags': tags_face_doesnt_have })
 
 def add_picture(request, face_id):
   form = PictureForm(request.POST)
@@ -32,6 +35,10 @@ def add_picture(request, face_id):
     new_picture = form.save(commit=False)
     new_picture.face_id = face_id
     new_picture.save()
+  return redirect('detail', face_id=face_id)
+
+def assoc_tag(request, face_id, tag_id):
+  Face.objects.get(id=face_id).tags.add(tag_id)
   return redirect('detail', face_id=face_id)
 
 class FaceCreate(CreateView):
@@ -48,7 +55,23 @@ class FaceDelete(DeleteView):
     model = Face 
     success_url = '/faces/'
 
-# class FaceForm(forms.Form):
+class TagList(ListView):
+    model = Tag
+
+class TagDetail(DetailView):
+    model = Tag
+
+class TagCreate(CreateView):
+    model = Tag
+    form_class = TagForm
+
+class TagUpdate(UpdateView):
+    model = Tag
+    form_class = TagForm
+
+class TagDelete(DeleteView):
+    model = Tag
+    success_url = '/tags/'
 
 
 
