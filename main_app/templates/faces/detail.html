@@ -26,10 +26,16 @@
     <h2>Add a Picture for {{face.name}}</h2>
     <div class="card">
       <div class="card-body">
+        <button id="start-camera">Start Camera</button>
+        <video id="video" width="320" height="240" autoplay></video>
+        <button id="click-photo">Click Photo</button>
+        <canvas id="canvas" width="320" height="240"></canvas>
+        {% csrf_token %} {% comment %}
         <form action="{% url 'add_picture' face.id %}" method="POST">
           {% csrf_token %} {{picture_form.as_p}}
           <input type="submit" class="btn btn-primary" value="Add Picture" />
         </form>
+        {% endcomment %}
       </div>
     </div>
   </div>
@@ -88,6 +94,59 @@
     function submitForm() {
       let form = document.getElementById('tag-form');
       form.submit();
+    }
+
+    let buttonElem = document.getElementById('take-picture');
+    let camera_button = document.querySelector('#start-camera');
+    let video = document.querySelector('#video');
+    let click_button = document.querySelector('#click-photo');
+    let canvas = document.querySelector('#canvas');
+
+    camera_button.addEventListener('click', async function () {
+      let stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+      video.srcObject = stream;
+    });
+
+    click_button.addEventListener('click', function () {
+      canvas
+        .getContext('2d')
+        .drawImage(video, 0, 0, canvas.width, canvas.height);
+      let image_data_url = canvas.toDataURL('image/jpeg');
+      let name = getCurrentTimestamp();
+      console.log(name, '<-name');
+      console.log(image_data_url, '<-image_data_url');
+
+      sendBase64ToServer(name, image_data_url);
+      // data url of the image
+    });
+
+    var sendBase64ToServer = function (name, base64) {
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      console.log(csrftoken, '<-csrftoken')
+      const httpPost = new XMLHttpRequest(),
+        path = 'upload_image',
+        data = JSON.stringify({ image: base64 });
+      console.log(data, '<-data');
+      {% comment %} httpPost.onreadystatechange = function (err) {
+        if (httpPost.readyState == 4 && httpPost.status == 200) {
+          console.log(httpPost.responseText);
+        } else {
+          console.log(err);
+        }
+      }; {% endcomment %}
+      // Set the content type of the request to json since that's what's being sent
+
+      httpPost.open('POST', path, true);
+      httpPost.setRequestHeader('Content-Type', 'application/json');
+      httpPost.setRequestHeader('X-CSRFToken', csrftoken);
+      httpPost.send(data);
+    };
+
+    function getCurrentTimestamp() {
+      return Date.now();
     }
   </script>
   {% endblock %}

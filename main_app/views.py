@@ -4,6 +4,9 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Face, Tag
 from .forms import FaceForm, PictureForm, TagForm
+import base64
+import json
+import time
 # from django.views.decorators import gzip
 import cv2
 # import threading
@@ -35,6 +38,24 @@ def add_picture(request, face_id):
     new_picture = form.save(commit=False)
     new_picture.face_id = face_id
     new_picture.save()
+  return redirect('detail', face_id=face_id)
+
+
+def upload_picture(request, face_id):
+  current_time = time.time()
+  file_name = str(face_id) + '-' + str(current_time).replace('.','-')
+  full_file_path = f'main_app/static/images/{file_name}.jpeg'
+  form = json.loads(request.body)
+  print(form['image'],'<-image')
+  header, encoded = form['image'].split(",", 1)
+  with open(full_file_path, "wb") as fh:
+    # fh.write(form)
+    fh.write(base64.b64decode(encoded))
+  # print(form)
+  # if form.is_valid():
+  #   new_picture = form.save(commit=False)
+  #   new_picture.face_id = face_id
+  #   new_picture.save()
   return redirect('detail', face_id=face_id)
 
 def assoc_tag(request, face_id, tag_id):

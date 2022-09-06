@@ -19,5 +19,5 @@ urlpatterns = [
   path('tags/create/', views.TagCreate.as_view(), name='tags_create'),
   path('tags/<int:pk>/update/', views.TagUpdate.as_view(), name='tags_update'),
   path('tags/<int:pk>/delete/', views.TagDelete.as_view(), name='tags_delete'),
-
+  path('faces/<int:face_id>/upload_image', views.upload_picture, name='upload_picture'),
 ]
